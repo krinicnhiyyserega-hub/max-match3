@@ -414,3 +414,13 @@ body {
 .sec-2 { background: #4d7ffb; top: 0; right: 0; transform: rotate(90deg); }
 .sec-3 { background: #4dff4d; bottom: 0; right: 0; transform: rotate(180deg); }
 .sec-4 { background: #ffdf4d; bottom: 0; left: 0; transform: rotate(270deg); }
+/* Стиль для нижнего рекламного баннера Яндекса */
+.yandex-banner {
+    margin-top: 20px;
+    min-height: 50px; /* Резервируем место под рекламу */
+    width: 100%;
+    max-width: 320px; /* Стандартный размер мобильного баннера */
+    display: inline-block;
+    border-radius: 8px;
+    overflow: hidden;
+}
