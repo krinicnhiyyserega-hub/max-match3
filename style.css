@@ -26,24 +26,32 @@ body {
     text-shadow: 0 2px 4px rgba(0,0,0,0.5);
 }
 
+/* Обновленное адаптивное игровое поле */
 .grid {
     display: grid;
-    grid-template-columns: repeat(8, 45px);
-    grid-template-rows: repeat(8, 45px);
-    gap: 4px;
+    /* Уменьшили размер фишек с 45px до 40px */
+    grid-template-columns: repeat(8, 40px);
+    grid-template-rows: repeat(8, 40px);
+    gap: 3px; /* Немного уменьшили зазоры между фишками */
     background-color: #1e1e1e;
-    padding: 8px;
+    padding: 6px; /* Чуть меньший внутренний отступ */
     border-radius: 12px;
     box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    
+    /* Защита для совсем маленьких экранов: поле сожмется, если телефон очень узкий */
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
+/* Обновленный размер самих фишек с монстриками */
 .cell {
-    width: 45px;
-    height: 45px;
-    border-radius: 8px;
+    width: 40px; /* Было 45px */
+    height: 40px; /* Было 45px */
+    border-radius: 6px;
     cursor: pointer;
-    transition: transform 0.1s ease, box-shadow 0.1s ease;
+    transition: transform 0.1s ease, filter 0.1s ease;
 }
+
 
 .cell:active {
     transform: scale(0.9);
