@@ -1,0 +1,408 @@
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #121212;
+    color: #ffffff;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    overflow: hidden;
+    
+    /* НАДО ДОБАВИТЬ: Запрещает телефону скроллить экран, когда мы двигаем фишки */
+    touch-action: none; 
+}
+
+
+.game-container {
+    text-align: center;
+}
+
+.score-board {
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(8, 45px);
+    grid-template-rows: repeat(8, 45px);
+    gap: 4px;
+    background-color: #1e1e1e;
+    padding: 8px;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+}
+
+.cell {
+    width: 45px;
+    height: 45px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+.cell:active {
+    transform: scale(0.9);
+}
+
+/* Новые текстуры из Шедеврума вместо скучных цветов */
+.color-0 { 
+    background-image: url('images/item0.png'); 
+    background-size: cover;
+    background-position: center;
+}
+.color-1 { 
+    background-image: url('images/item1.png'); 
+    background-size: cover;
+    background-position: center;
+}
+.color-2 { 
+    background-image: url('images/item2.png'); 
+    background-size: cover;
+    background-position: center;
+}
+.color-3 { 
+    background-image: url('images/item3.png'); 
+    background-size: cover;
+    background-position: center;
+}
+.color-4 { 
+    background-image: url('images/item4.png'); 
+    background-size: cover;
+    background-position: center;
+}
+
+
+/* Эффект для выбранной фишки вместо белой обводки */
+/* Фишка увеличивается ТОЛЬКО в момент самого прикосновения */
+.cell:active {
+    transform: scale(1.2); /* Фишка становится больше при нажатии */
+    filter: brightness(1.3); /* Становится ярче в момент касания */
+    z-index: 10;
+}
+
+
+/* Анимация пульсации для азарта */
+@keyframes pulseSelected {
+    0% { transform: scale(1.1); }
+    100% { transform: scale(1.2); }
+}
+
+/* Стиль для пустой ячейки во время падения фишек */
+.blank {
+    background: #1e1e1e !important;
+    box-shadow: none !important;
+    outline: none !important;
+}
+.stats-panel {
+    display: flex;
+    justify-content: space-around;
+    font-size: 22px;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+.stat-box {
+    background: #1e1e1e;
+    padding: 5px 15px;
+    border-radius: 20px;
+    border: 1px solid #333;
+}
+/* Всплывающее окно */
+.modal {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+}
+.modal.hidden { display: none; }
+.modal-content {
+    background: #222;
+    padding: 30px;
+    border-radius: 16px;
+    text-align: center;
+    border: 2px solid #4d7ffb;
+    max-width: 300px;
+}
+.btn {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.1s;
+}
+.btn:active { transform: scale(0.95); }
+.btn-share { background: #4d7ffb; color: white; }
+.btn-video { background: #00cc00; color: white; }
+.btn-restart { background: #444; color: white; }
+/* Кнопка Колеса */
+.wheel-trigger-btn {
+    background: linear-gradient(45deg, #ff9900, #ff5500);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 25px;
+    margin-bottom: 15px;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(255, 85, 0, 0.4);
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+/* Эффект Огненного Комбо */
+.fire-mode {
+    animation: shake 0.3s infinite, fire-glow 1s infinite alternate;
+}
+
+@keyframes fire-glow {
+    from { box-shadow: 0 0 20px #ff5500, inset 0 0 10px #ff5500; }
+    to { box-shadow: 0 0 40px #ff3300, inset 0 0 20px #ff3300; }
+}
+
+@keyframes shake {
+    0% { transform: translate(1px, 1px) rotate(0deg); }
+    10% { transform: translate(-1px, -2px) rotate(-1deg); }
+    30% { transform: translate(0px, 2px) rotate(0deg); }
+    50% { transform: translate(-1px, 1px) rotate(1deg); }
+    100% { transform: translate(1px, 1px) rotate(0deg); }
+}
+
+/* Колесо Фортуны */
+.wheel-container {
+    width: 150px;
+    height: 150px;
+    margin: 20px auto;
+    position: relative;
+}
+
+.wheel {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: conic-gradient(#ff4d4d 0deg 90deg, #4d7ffb 90deg 180deg, #4dff4d 180deg 270deg, #ffdf4d 270deg 360deg);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 40px;
+    transition: transform 3s cubic-bezier(0.1, 0.8, 0.3, 1);
+}
+/* Полноэкранный холст для частиц огня */
+#fireCanvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1; /* Огонь горит на заднем фоне, создавая атмосферу */
+    pointer-events: none; /* Клик сквозь холст на фишки */
+}
+
+/* Изменяем анимацию свечения поля для большего вирусного эффекта */
+.fire-mode {
+    animation: shake 0.15s infinite, ultra-fire-glow 0.8s infinite alternate;
+    border: 3px solid #ff3300 !important;
+}
+
+@keyframes ultra-fire-glow {
+    from { 
+        box-shadow: 0 0 30px #ff3300, inset 0 0 15px #ff5500;
+        background-color: #2a0c02; /* Поле слегка краснеет внутри */
+    }
+    to { 
+        box-shadow: 0 0 60px #ffaa00, inset 0 0 30px #ffaa00;
+        background-color: #4a1202;
+    }
+}
+/* Анимация сильной тряски экрана */
+.screen-shake {
+    animation: mega-shake 0.4s ease-in-out;
+}
+
+@keyframes mega-shake {
+    0% { transform: translate(0, 0) rotate(0deg); }
+    10% { transform: translate(-6px, -4px) rotate(-2deg); }
+    20% { transform: translate(5px, 3px) rotate(1deg); }
+    30% { transform: translate(-4px, 5px) rotate(-1deg); }
+    40% { transform: translate(4px, -3px) rotate(2deg); }
+    50% { transform: translate(-3px, -2px) rotate(-1deg); }
+    60% { transform: translate(3px, 4px) rotate(1deg); }
+    70% { transform: translate(-2px, -3px) rotate(0deg); }
+    80% { transform: translate(2px, 2px) rotate(-1deg); }
+    90% { transform: translate(-1px, 1px) rotate(0deg); }
+    100% { transform: translate(0, 0) rotate(0deg); }
+}
+/* Полноэкранный экран меню */
+.menu-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(18, 18, 18, 0.95);
+    backdrop-filter: blur(10px); /* Красивое размытие фона */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 200; /* Перекрывает всё игровое поле */
+    transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+
+/* Плавное скрытие меню при старте */
+.menu-overlay.fade-out {
+    opacity: 0;
+    visibility: hidden;
+}
+
+.menu-content {
+    text-align: center;
+    padding: 20px;
+    max-width: 350px;
+}
+
+/* Огненный неоновый заголовок */
+.game-title {
+    font-size: 36px;
+    font-weight: 900;
+    line-height: 1.2;
+    margin-bottom: 10px;
+    color: #ffffff;
+    text-shadow: 0 0 10px #ff3300, 0 0 20px #ff5500;
+}
+
+.game-title .highlight {
+    color: #ffaa00;
+    text-shadow: 0 0 10px #ffaa00, 0 0 30px #ff5500;
+}
+
+.game-subtitle {
+    font-size: 16px;
+    color: #aaaaaa;
+    margin-bottom: 40px;
+}
+
+/* Огромная пульсирующая кнопка СТАРТ */
+.btn-start-game {
+    background: linear-gradient(45deg, #ff5500, #ffaa00);
+    color: white;
+    border: none;
+    padding: 16px 50px;
+    font-size: 22px;
+    font-weight: bold;
+    border-radius: 30px;
+    cursor: pointer;
+    box-shadow: 0 6px 25px rgba(255, 85, 0, 0.5);
+    transition: transform 0.1s ease;
+    animation: pulseStartButton 1.5s infinite;
+}
+
+.btn-start-game:active {
+    transform: scale(0.95);
+}
+
+.menu-footer {
+    margin-top: 50px;
+    font-size: 12px;
+    color: #555555;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+/* Анимация пульсации кнопки */
+@keyframes pulseStartButton {
+    0% { transform: scale(1); box-shadow: 0 6px 25px rgba(255, 85, 0, 0.5); }
+    50% { transform: scale(1.06); box-shadow: 0 6px 35px rgba(255, 170, 0, 0.8); }
+    100% { transform: scale(1); box-shadow: 0 6px 25px rgba(255, 85, 0, 0.5); }
+}
+/* Стрелочка-указатель сверху колеса */
+.wheel-pointer {
+    position: absolute;
+    top: -22px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 32px;
+    color: #ffaa00;
+    text-shadow: 0 0 10px #ff5500;
+    z-index: 210; /* Сидит строго над колесом */
+    animation: pointerWobble 0.3s ease infinite alternate; /* Легкое покачивание для живости */
+}
+
+/* Контейнер колеса делаем позиционированным */
+.wheel-container {
+    width: 200px; /* Немного увеличим для читаемости текста */
+    height: 200px;
+    margin: 30px auto;
+    position: relative;
+}
+
+/* Обновляем само колесо */
+.wheel {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    position: relative;
+    overflow: hidden;
+    border: 5px solid #333;
+    box-shadow: 0 0 20px rgba(0,0,0,0.6);
+    font-size: 16px;
+    font-weight: bold;
+}
+
+/* Обновляем само колесо — делаем из него сетку 2х2 */
+.wheel {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    position: relative;
+    overflow: hidden;
+    border: 5px solid #333;
+    box-shadow: 0 0 20px rgba(0,0,0,0.6);
+    font-size: 24px; /* Делаем шрифт призов крупнее и заметнее */
+    font-weight: bold;
+    
+    /* Новая магия сетки */
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+}
+
+/* Общий стиль для каждого кусочка пирога */
+.sector {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+    width: 100%;
+    height: 100%;
+}
+
+/* Просто красим каждую четверть в свой сочный цвет */
+.sec-1 { background-color: #ff4d4d; } /* Верхний левый */
+.sec-2 { background-color: #4d7ffb; } /* Верхний правый */
+.sec-3 { background-color: #4dff4d; } /* Нижний левый */
+.sec-4 { background-color: #ffdf4d; } /* Нижний правый */
+
+
+/* Разворачиваем каждый сектор на свой угол и красим */
+.sec-1 { background: #ff4d4d; top: 0; left: 0; transform: rotate(0deg); }
+.sec-2 { background: #4d7ffb; top: 0; right: 0; transform: rotate(90deg); }
+.sec-3 { background: #4dff4d; bottom: 0; right: 0; transform: rotate(180deg); }
+.sec-4 { background: #ffdf4d; bottom: 0; left: 0; transform: rotate(270deg); }

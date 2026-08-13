@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Взрывной Три в Ряд</title>
+    <link rel="stylesheet" href="style.css">
+    <script>window.yaContextCb = window.yaContextCb || []</script>
+    <script src="https://yandex.ru" async></script>
+</head>
+<body>
+
+    <!-- Холст для эффекта живого огня -->
+    <canvas id="fireCanvas"></canvas>
+
+    <!-- ГЛАВНОЕ МЕНЮ -->
+    <div id="start-menu" class="menu-overlay">
+        <div class="menu-content">
+            <h1 class="game-title">🔥 ВЗРЫВНОЙ<br><span class="highlight">ТРИ В РЯД</span></h1>
+            <p class="game-subtitle">Собирай комбо, взрывай item0 и побеждай друзей!</p>
+            <button id="start-game-btn" class="btn-start-game">ИГРАТЬ 🎮</button>
+            <div class="menu-footer">для мессенджера Макс</div>
+        </div>
+    </div>
+
+    <!-- ИГРОВОЙ ИНТЕРФЕЙС (Должен быть строго ОДИН) -->
+    <div class="game-container">
+        <button id="wheel-open-btn" class="wheel-trigger-btn">🎁 Колесо Удачи (Раз в день)</button>
+
+        <div class="stats-panel">
+            <div class="stat-box">Очки: <span id="score">0</span></div>
+            <div class="stat-box" id="combo-box">Комбо: <span id="combo">x1</span></div>
+            <div class="stat-box">Ходы: <span id="moves">30</span></div>
+        </div>
+        
+        <div id="grid" class="grid"></div>
+    </div>
+
+    <!-- ОКНО 1: КОЛЕСО ФОРТУНЫ -->
+    <div id="wheel-modal" class="modal hidden">
+        <div class="modal-content">
+            <h2>🎡 Колесо Удачи!</h2>
+            <div class="wheel-container">
+                <div class="wheel-container">
+    <!-- Стрелочка, которая показывает на выигранный сектор -->
+    <div class="wheel-pointer">▼</div>
+    <div id="wheel" class="wheel">
+    <!-- Ровные сектора с призами -->
+    <div class="sector sec-1">+5</div>
+    <div class="sector sec-2">+10</div>
+    <div class="sector sec-3">x2</div>
+    <div class="sector sec-4">🔥</div>
+</div>
+</div>
+            </div>
+            <button id="spin-btn" class="btn btn-video">Крутить за рекламу</button>
+            <button id="wheel-close-btn" class="btn btn-restart">Назад</button>
+        </div>
+    </div>
+
+    <!-- ОКНО 2: КОНЕЦ ИГРЫ -->
+    <div id="game-over-modal" class="modal hidden">
+        <div class="modal-content">
+            <h2>🎉 Время вышло!</h2>
+            <p>Ваш счет: <strong id="final-score">0</strong></p>
+            <button id="share-btn" class="btn btn-share">⚔️ Бросить вызов другу в Макс</button>
+            <button id="reward-btn" class="btn btn-video">📺 Смотреть видео (+5 ходов)</button>
+            <button id="restart-btn" class="btn btn-restart">🔄 Еще раз</button>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
