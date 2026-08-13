@@ -424,21 +424,23 @@ document.getElementById('reward-btn').addEventListener('click', () => {
 document.getElementById('restart-btn').addEventListener('click', createBoard);
 
 // Логика кнопки «ИГРАТЬ» в Главном меню
+// Логика кнопки «ИГРАТЬ» в Главном меню
 document.getElementById('start-game-btn').addEventListener('click', function() {
     document.getElementById('start-menu').classList.add('fade-out');
     playExplosionSound(); 
     createBoard();
 
-    // ЗАПУСКАЕМ НАСТОЯЩИЙ БАННЕР ИЗ СКРИНШОТА:
+    // ВСТАВЛЯЕМ СЮДА НОВЫЙ КОД БАННЕРА ИЗ СКРИНШОТА:
     if (window.yaContextCb) {
         window.yaContextCb.push(() => {
             if (typeof Ya !== 'undefined' && Ya.Context && Ya.Context.AdvManager) {
                 Ya.Context.AdvManager.render({
-                    blockId: 'R-A-19755925-1',
-                    renderTo: 'yandex_rtb_R-A-19755925-1'
+                    blockId: 'R-A-19746878-15',
+                    renderTo: 'yandex_rtb_R-A-19746878-15'
                 });
             }
         });
     }
 });
+
 
