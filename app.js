@@ -154,6 +154,57 @@ function createBoard() {
             touchStartX = e.touches.clientX;
             touchStartY = e.touches.clientY;
         }, { passive: true });
+                cell.addEventListener('touchmove', function(e) {
+            if (isRefilling || moves <= 0 || touchIdBeingDragged === null) return;
+
+            let currentX = e.touches.clientX;
+            let currentY = e.touches.clientY;
+
+            let diffX = currentX - touchStartX;
+            let diffY = currentY - touchStartY;
+
+            const swipeThreshold = 30; 
+            let targetId = null;
+
+            if (Math.abs(diffX) > Math.abs(diffY)) {
+                if (Math.abs(diffX) > swipeThreshold) {
+                    if (diffX > 0 && touchIdBeingDragged % width < width - 1) {
+                        targetId = touchIdBeingDragged + 1; 
+                    } else if (diffX < 0 && touchIdBeingDragged % width > 0) {
+                        targetId = touchIdBeingDragged - 1; 
+                    }
+                }
+            } else {
+                if (Math.abs(diffY) > swipeThreshold) {
+                    if (diffY > 0 && touchIdBeingDragged < width * (width - 1)) {
+                        targetId = touchIdBeingDragged + width; 
+                    } else if (diffY < 0 && touchIdBeingDragged >= width) {
+                        targetId = touchIdBeingDragged - width; 
+                    }
+                }
+            }
+
+            if (targetId !== null) {
+                let cellBeingDragged = board[touchIdBeingDragged];
+                let cellBeingReplaced = board[targetId];
+
+                let color1 = cellBeingDragged.className;
+                let color2 = cellBeingReplaced.className;
+
+                cellBeingDragged.className = color2;
+                cellBeingReplaced.className = color1;
+
+                moves--;
+                movesDisplay.innerHTML = moves;
+
+                touchIdBeingDragged = null; 
+            }
+        }, { passive: true });
+
+        cell.addEventListener('touchend', function() {
+            touchIdBeingDragged = null;
+        }, { passive: true });
+
 
         cell.addEventListener('touchend', function(e) {
             if (isRefilling || moves <= 0 || touchIdBeingDragged === null) return;
