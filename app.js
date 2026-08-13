@@ -219,11 +219,50 @@ function createBoard() {
 }
 
 // --- ЛОГИКА ОКРИТИЧЕСКИХ ОКОН И КНОПОК ---
+// 🎯 АВТОМАТИЧЕСКИЙ КОНЕЦ ИГРЫ С ВСПЛЫВАЮЩЕЙ РЕКЛАМОЙ ЯНДЕКСА
 function endGame() {
+    // Гасим огненные эффекты, чтобы они не грузили телефон во время рекламы
+    fireActive = false;
+    grid.classList.remove('fire-mode');
+
+    console.log("Ходы закончились. Автоматический вызов рекламы Яндекса...");
+
+    // 1. Проверяем, загружена ли библиотека Яндекса на странице
+    if (window.yaContextCb && typeof Ya !== 'undefined' && Ya.Context && Ya.Context.AdvManager) {
+    
+    window.yaContextCb.push(() => {
+        Ya.Context.AdvManager.render({
+            // ВСТАВЛЯЕМ СЮДА ВАШ РЕАЛЬНЫЙ ID ИЗ СКРИНШОТА:
+            blockId: 'R-A-19746878-3', 
+            type: 'fullscreen',
+            platform: 'touch',
+            
+            onClose: function() {
+                console.log("Игрок закрыл рекламу. Показываем финальный счет.");
+                showFinalScoreWindow();
+            },
+            onError: function() {
+                console.log("Реклама не загрузилась. Пропускаем к счету.");
+                showFinalScoreWindow();
+            }
+        });
+    })
+
+    } else {
+        // --- ТЕСТОВЫЙ РЕЖИМ (если игра запущена локально в VS Code через Live Server) ---
+        console.log("Всплывает имитация рекламы (в консоли). Переходим к счету через 1 секунду.");
+        setTimeout(() => {
+            showFinalScoreWindow();
+        }, 1000);
+    }
+}
+
+// Вспомогательная функция, которая открывает наше вирусное окно
+function showFinalScoreWindow() {
     finalScoreDisplay.innerHTML = score;
     modal.classList.remove('hidden');
-    fireActive = false;
 }
+
 
 document.getElementById('wheel-open-btn').addEventListener('click', () => wheelModal.classList.remove('hidden'));
 document.getElementById('wheel-close-btn').addEventListener('click', () => wheelModal.classList.add('hidden'));
