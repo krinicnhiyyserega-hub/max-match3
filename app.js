@@ -157,7 +157,7 @@ function createBoard() {
         grid.appendChild(cell);
         board.push(cell);
 
-        // Управление свайпами
+                // // Управление свайпами и нажатиями
         cell.addEventListener('touchstart', function(e) {
             if (isRefilling || moves <= 0) return;
             touchIdBeingDragged = parseInt(this.id);
@@ -190,10 +190,13 @@ function createBoard() {
             if (targetId !== null) {
                 let cellBeingDragged = board[touchIdBeingDragged];
                 let cellBeingReplaced = board[targetId];
+
                 let color1 = cellBeingDragged.className;
                 let color2 = cellBeingReplaced.className;
+
                 cellBeingDragged.className = color2;
                 cellBeingReplaced.className = color1;
+
                 moves--;
                 movesDisplay.innerHTML = moves;
                 touchIdBeingDragged = null; 
@@ -203,7 +206,42 @@ function createBoard() {
         cell.addEventListener('touchend', function() {
             touchIdBeingDragged = null;
         }, { passive: true });
-    }
+
+        // ДОБАВЛЯЕМ ОБРАБОТКУ КЛИКОВ:
+        cell.addEventListener('click', function() {
+            if (isRefilling || moves <= 0) return;
+
+            if (!firstClickCell) {
+                firstClickCell = this;
+                this.style.transform = 'scale(1.15)';
+                this.style.filter = 'brightness(1.2)';
+            } else {
+                let id1 = parseInt(firstClickCell.id);
+                let id2 = parseInt(this.id);
+                const validMoves = [id1 - 1, id1 + 1, id1 - width, id1 + width];
+
+                firstClickCell.style.transform = '';
+                firstClickCell.style.filter = '';
+
+                if (validMoves.includes(id2)) {
+                    let color1 = firstClickCell.className;
+                    let color2 = this.className;
+
+                    firstClickCell.className = color2;
+                    this.className = color1;
+
+                    moves--;
+                    movesDisplay.innerHTML = moves;
+                    firstClickCell = null;
+                } else {
+                    firstClickCell = this;
+                    this.style.transform = 'scale(1.15)';
+                    this.style.filter = 'brightness(1.2)';
+                }
+            }
+        });
+    } // Конец цикла for (строка 157 со скриншота переместится сюда)
+
 
     gameInterval = setInterval(function(){
         matchesFoundInTurn = false;
